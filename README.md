@@ -1,1 +1,1 @@
-# my_photo_album
+# My Photo Album
