@@ -56,14 +56,14 @@
     canvas.width(CANVAS_WIDTH)
     canvas.height(CANVAS_HEIGHT)
 
-    pixelRatio = this.getDevicePixelRatio()
+    pixelRatio = getDevicePixelRatio()
     canvasElement.width = CANVAS_WIDTH * pixelRatio
     canvasElement.height = CANVAS_HEIGHT * pixelRatio
   }
 
   function addBookReader() {
     options = {
-      numPages: 6,
+      numPages: 2,
       x: 0,
       y: 0,
       pageWidth: BOOK_WIDTH/2,
@@ -79,18 +79,37 @@
   }
 
   function addImages() {
-    var assetsPath = "./assets/images/";
-    manifest = [
-      {src: "img1.jpg", id: "img1"},
-      {src: "img2.jpg", id: "img2"},
-      {src: "img3.jpg", id: "img3"},
-      {src: "img4.jpg", id: "img4"},
-      {src: "img5.jpg", id: "img5"}
-    ]
+    // var assetsPath = "./assets/images/";
+    // manifest = [
+    //   {src: "img1.jpg", id: "img1"},
+    //   {src: "img2.jpg", id: "img2"},
+    //   {src: "img3.jpg", id: "img3"},
+    //   {src: "img4.jpg", id: "img4"},
+    //   {src: "img5.jpg", id: "img5"}
+    // ]
 
+    var picasa = {
+      username : 'your_Picasa_id',
+      albumId : 'your_album_id',
+      count : 14
+    }
+    photoFeed = "https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/6150524963620273041?alt=json&callback=?&hl=en_US";
+
+    manifest = [];
+    $.getJSON(photoFeed, function(data) {
+      console.log('hi data', data);
+      $.each(data.feed.entry, function(index){
+        manifest.push({src: data.feed.entry[index].content.src, id: data.feed.entry[index].title.$t});
+      })
+      loadManifest(manifest)
+    })
+  }
+
+  function loadManifest(manifest) {
+    console.log('load manifest', manifest);
     queue = new createjs.LoadQueue(false);
     queue.on("complete", createjs.proxy(handleComplete, this));
-    queue.loadManifest(manifest, true, assetsPath);
+    queue.loadManifest(manifest, true);
   }
 
   createjs.Bitmap.prototype.fitInto = function(width, height) {
@@ -101,6 +120,9 @@
 
   function handleComplete() {
     console.log('handleComplete')
+    pagesToAdd = manifest.length - br.numPages;
+    pagesToAdd += manifest.length % 2; // must be even pages
+    if (pagesToAdd > 0) br.addBlankPages(pagesToAdd)
     for (var i = 0; i < manifest.length; i++) {
       page = br.getPageContainer(i)
       img = queue.getResult(manifest[i].id)
