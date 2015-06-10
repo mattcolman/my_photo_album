@@ -63,7 +63,7 @@
 
   function addBookReader() {
     options = {
-      numPages: 2,
+      numPages: 0,
       x: 0,
       y: 0,
       pageWidth: BOOK_WIDTH/2,
@@ -79,14 +79,6 @@
   }
 
   function addImages() {
-    // var assetsPath = "./assets/images/";
-    // manifest = [
-    //   {src: "img1.jpg", id: "img1"},
-    //   {src: "img2.jpg", id: "img2"},
-    //   {src: "img3.jpg", id: "img3"},
-    //   {src: "img4.jpg", id: "img4"},
-    //   {src: "img5.jpg", id: "img5"}
-    // ]
 
     var picasa = {
       username : 'your_Picasa_id',
@@ -101,6 +93,8 @@
       $.each(data.feed.entry, function(index){
         manifest.push({src: data.feed.entry[index].content.src, id: data.feed.entry[index].title.$t});
       })
+      numPages = manifest.length + manifest.length % 2; // must be even pages
+      br.addBlankPages(numPages)
       loadManifest(manifest)
     })
   }
@@ -108,7 +102,8 @@
   function loadManifest(manifest) {
     console.log('load manifest', manifest);
     queue = new createjs.LoadQueue(false);
-    queue.on("complete", createjs.proxy(handleComplete, this));
+    //queue.on("complete", createjs.proxy(handleComplete, this));
+    queue.on("fileload", createjs.proxy(handleFileLoad, this));
     queue.loadManifest(manifest, true);
   }
 
@@ -118,25 +113,19 @@
     this.scaleX = this.scaleY = Math.min(scaleX, scaleY);
   }
 
-  function handleComplete() {
-    console.log('handleComplete')
-    pagesToAdd = manifest.length - br.numPages;
-    pagesToAdd += manifest.length % 2; // must be even pages
-    if (pagesToAdd > 0) br.addBlankPages(pagesToAdd)
-    for (var i = 0; i < manifest.length; i++) {
-      page = br.getPageContainer(i)
-      img = queue.getResult(manifest[i].id)
-      bmp = new createjs.Bitmap(img)
-      scaleX = br.pageWidth / img.width;
-      scaleY = br.pageHeight / img.height;
-      scale = Math.min(scaleX, scaleY);
-      bmp.scaleX = bmp.scaleY = scale
-      bmp.x = (br.pageWidth - img.width*scale)/2
-      bmp.y = (br.pageHeight - img.height*scale)/2
-      bmp.cache(0, 0, img.width, img.height, scale)
+  function handleFileLoad(e) {
+    page = br.getPageContainer(e.currentTarget._numItemsLoaded-1)
+    img = e.result
+    bmp = new createjs.Bitmap(img)
+    scaleX = br.pageWidth / img.width;
+    scaleY = br.pageHeight / img.height;
+    scale = Math.min(scaleX, scaleY);
+    bmp.scaleX = bmp.scaleY = scale
+    bmp.x = (br.pageWidth - img.width*scale)/2
+    bmp.y = (br.pageHeight - img.height*scale)/2
+    bmp.cache(0, 0, img.width, img.height, scale)
 
-      page.addChild(bmp)
-    };
+    page.addChild(bmp)
   }
 
 </script>
