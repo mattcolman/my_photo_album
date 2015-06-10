@@ -18,6 +18,8 @@
   var stageHeight;
   var br; // book reader
   var manifest;
+  var queue;
+  var completeHandler;
 
   CANVAS_WIDTH = 2000;
   CANVAS_HEIGHT = 700;
@@ -26,6 +28,23 @@
   BOOK_HEIGHT = 700;
 
   function init() {
+    preloadAssets();
+  }
+
+  function preloadAssets() {
+    queue = new createjs.LoadQueue(false);
+    completeHandler = createjs.proxy(handlePreloadAssetsComplete, this)
+    queue.on("complete", completeHandler);
+    assetPath = "./assets/images/"
+    manifest = [
+      {src: "boy_bg.png", id: "boy_bg"}
+    ]
+    queue.loadManifest(manifest, true, assetPath);
+  }
+
+  function handlePreloadAssetsComplete() {
+    queue.removeEventListener("complete", completeHandler)
+    this.backgroundImage = queue.getResult("boy_bg");
     setupStage();
     addBookReader();
     addImages();
@@ -69,7 +88,8 @@
       pageWidth: BOOK_WIDTH/2,
       pageHeight: BOOK_HEIGHT,
       pageGap: 0,
-      startPage: 0
+      startPage: 0,
+      background: this.backgroundImage
     }
 
     cnt = new createjs.Container()
