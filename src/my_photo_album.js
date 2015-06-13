@@ -3,6 +3,15 @@
   /**
    * @author Matt Colman http://mattcolman.com/ @matt_colman
    */
+
+  /**
+   * TODO
+   * Use requirejs to split up classes and build a minified JS
+   * Draw white borders on images
+   * smart sort to put suitable images in suitable dropZones e.g. match portrait to portrait
+   * scale to fit screen
+   * use SpriteStage for webgl
+  */
   MyPhotoAlbum = (function() {
 
     // common utility methods
