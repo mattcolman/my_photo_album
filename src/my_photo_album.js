@@ -36,6 +36,12 @@
       return s;
     }
 
+    createjs.Bitmap.prototype.fitInto = function(width, height) {
+      scaleX = width / this.image.width;
+      scaleY = height / this.image.height;
+      this.scaleX = this.scaleY = Math.min(scaleX, scaleY);
+    }
+
     var stage;
     var stageWidth;
     var stageHeight;
@@ -159,25 +165,6 @@
       cnt.x = (2000 - BOOK_WIDTH)/2
     }
 
-    p.addPageLayouts = function() {
-      var l = PageTypes.length
-      var j = 0
-      for (var i = 0; i < br.numPages; i++) {
-        page = br.getPage(i)
-        pageCnt = br.getPageContainer(i)
-        pageLayout = PageLayouts[PageTypes[j++%l]]
-
-        for (var k = 0; k < pageLayout.length; k++) {
-          rect = pageLayout[k]
-          dropZone = new createjs.Container()
-          dropZone.bounds = rect
-          dropZone.set({x: rect.x, y: rect.y})
-          pageCnt.addChild(dropZone)
-          dropZones.push(dropZone)
-        };
-      };
-    }
-
     p.addImages = function() {
 
       // TODO
@@ -196,23 +183,48 @@
         $.each(data.feed.entry, function(index){
           manifest.push({src: data.feed.entry[index].content.src, id: data.feed.entry[index].title.$t});
         })
-        numPages = manifest.length + manifest.length % 2; // must be even pages
-        br.addBlankPages(numPages)
-        _this.addPageLayouts()
+        pageLayouts = _this.getPageLayouts(manifest.length)
+        br.addBlankPages(pageLayouts.length - br.allPages.length)
+        _this.addPageLayouts(pageLayouts)
         _this.loadManifest(manifest)
       })
+    }
+
+    p.getPageLayouts = function(numImages) {
+      console.log("numImages", numImages)
+      var l = PageTypes.length
+      var pageLayouts = []
+      numPages = 0
+      while (numImages > 0) {
+        pageLayout = PageLayouts[PageTypes[numPages++%l]]
+        numImages -= pageLayout.length
+        pageLayouts.push(pageLayout)
+      }
+      numPages = numPages + numPages%2 // must be even pages
+      return pageLayouts
+    }
+
+    p.addPageLayouts = function(pageLayouts) {
+      for (var i = 0; i < pageLayouts.length; i++) {
+        page = br.getPage(i)
+        pageCnt = br.getPageContainer(i)
+        pageLayout = pageLayouts[i]
+
+        for (var k = 0; k < pageLayout.length; k++) {
+          rect = pageLayout[k]
+          dropZone = new createjs.Container()
+          dropZone.bounds = rect
+          dropZone.set({x: rect.x, y: rect.y})
+          pageCnt.addChild(dropZone)
+          dropZones.push(dropZone)
+        };
+      };
     }
 
     p.loadManifest = function(manifest) {
       queue = new createjs.LoadQueue(false);
       queue.on("fileload", createjs.proxy(this.handleFileLoad, this));
       queue.loadManifest(manifest, true);
-    }
-
-    createjs.Bitmap.prototype.fitInto = function(width, height) {
-      scaleX = width / this.image.width;
-      scaleY = height / this.image.height;
-      this.scaleX = this.scaleY = Math.min(scaleX, scaleY);
     }
 
     p.handleFileLoad = function(e) {
