@@ -11,6 +11,7 @@
    * smart sort to put suitable images in suitable dropZones e.g. match portrait to portrait
    * scale to fit screen
    * use SpriteStage for webgl
+   * build a bootstrap front page with picasa login.
   */
   MyPhotoAlbum = (function() {
 
@@ -24,6 +25,15 @@
         ratio = window.devicePixelRatio;
       }
       return ratio;
+    }
+
+    function makeRect(w, h, color, strokeColor) {
+      g = new createjs.Graphics()
+      if (strokeColor != null) g.beginStroke(strokeColor);
+       g.beginFill(color)
+        .drawRect(0, 0, w, h)
+      s = new createjs.Shape(g)
+      return s;
     }
 
     var stage;
@@ -154,6 +164,7 @@
       var j = 0
       for (var i = 0; i < br.numPages; i++) {
         page = br.getPage(i)
+        pageCnt = br.getPageContainer(i)
         pageLayout = PageLayouts[PageTypes[j++%l]]
 
         for (var k = 0; k < pageLayout.length; k++) {
@@ -161,7 +172,7 @@
           dropZone = new createjs.Container()
           dropZone.bounds = rect
           dropZone.set({x: rect.x, y: rect.y})
-          page.addChild(dropZone)
+          pageCnt.addChild(dropZone)
           dropZones.push(dropZone)
         };
       };
@@ -205,7 +216,6 @@
     }
 
     p.handleFileLoad = function(e) {
-      page = br.getPageContainer(e.currentTarget._numItemsLoaded-1)
       img = e.result
       bmp = new createjs.Bitmap(img)
       // scaleX = br.pageWidth / img.width;
@@ -218,32 +228,34 @@
 
       //page.addChild(bmp);
       dropZone = dropZones.shift()
-      bmp.fitInto(dropZone.bounds.width, dropZone.bounds.height)
-      bmp.x = (dropZone.bounds.width - bmp.image.width*bmp.scaleX) / 2
-      bmp.y = (dropZone.bounds.height - bmp.image.height*bmp.scaleY) / 2
-      dropZone.addChild(bmp)
+      border = 10
+      doubleBorder = border*2
+      w = dropZone.bounds.width - doubleBorder
+      h = dropZone.bounds.height - doubleBorder
+      bmp.fitInto(w, h)
+      bmpWidth = bmp.image.width*bmp.scaleX
+      bmpHeight = bmp.image.height*bmp.scaleY
+      bmp.x = (w - bmpWidth) / 2
+      bmp.y = (h - bmpHeight) / 2
+
+      whiteBg = makeRect(bmpWidth + doubleBorder, bmpHeight + doubleBorder, "#ffffff")
+      whiteBg.x = bmp.x - border
+      whiteBg.y = bmp.y - border
+      dropZone.addChild(whiteBg, bmp)
 
       //this.drawPageLayout(page);
     }
 
+    // debug draw the drop zones
     p.drawPageLayout = function(parent) {
       console.log("drawPageLayout")
       pageLayout = PageLayouts[PageTypes[0]]
       for (name in pageLayout) {
         rect = pageLayout[name];
-        shape = this.makeRect(rect.width, rect.height, "#ff0000")
+        shape = makeRect(rect.width, rect.height, "#ff0000", "#000000")
         shape.setTransform(rect.x, rect.y)
         parent.addChild(shape)
       }
-    }
-
-    p.makeRect = function(w, h, color) {
-      g = new createjs.Graphics()
-      g.beginStroke("#000000")
-       .beginFill(color)
-       .drawRect(0, 0, w, h)
-      s = new createjs.Shape(g)
-      return s;
     }
 
     return createjs.promote(MyPhotoAlbum, "EventDispatcher");
