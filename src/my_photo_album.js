@@ -9,6 +9,8 @@
    * Use requirejs to split up classes and build a minified JS
    * Draw white borders on images
    * smart sort to put suitable images in suitable dropZones e.g. match portrait to portrait
+   * choose the page layouts with a pattern of images per page. e.g. [1, 2, 4, 3, 2, 1]
+     then wait on each page for all images to be loaded before determining which page layout to choose from
    * scale to fit screen
    * use SpriteStage for webgl
    * build a bootstrap front page with picasa login.
@@ -34,6 +36,16 @@
         .drawRect(0, 0, w, h)
       s = new createjs.Shape(g)
       return s;
+    }
+
+    function getStageScale(stageWidth, stageHeight, pixelRatio) {
+      console.log('window height', $(window).height())
+      docWidth = $(window).width() * pixelRatio
+      docHeight = $(window).height() * pixelRatio
+      scaleWidth = docWidth / stageWidth
+      scaleHeight = docHeight / stageHeight
+      scale = Math.min(scaleWidth, scaleHeight)
+      return scale;
     }
 
     createjs.Bitmap.prototype.fitInto = function(width, height) {
@@ -129,22 +141,28 @@
     }
 
     p.setupStage = function() {
-      var canvas = document.getElementById("maincanvas");
-      stage = new createjs.Stage(canvas);
-      stage.enableMouseOver();
-      stageWidth = canvas.width;
-      stageHeight = canvas.height;
-      createjs.Ticker.addEventListener("tick", stage);
-
-      // css
-      canvas = $("#maincanvas")
-      canvasElement = canvas[0]
-      canvas.width(CANVAS_WIDTH)
-      canvas.height(CANVAS_HEIGHT)
+      var canvas = $('<canvas>')
+      var canvasElement = canvas[0]
+      $("#background").append(canvas)
+      var easelStage = new createjs.Stage(canvasElement);
+      easelStage.enableMouseOver();
+      createjs.Ticker.addEventListener("tick", easelStage);
+      stage = new createjs.Container()
+      easelStage.addChild(stage)
 
       pixelRatio = getDevicePixelRatio()
-      canvasElement.width = CANVAS_WIDTH * pixelRatio
-      canvasElement.height = CANVAS_HEIGHT * pixelRatio
+      stageScale = getStageScale(CANVAS_WIDTH, CANVAS_HEIGHT, pixelRatio)
+      // css
+      canvasWidth = CANVAS_WIDTH*stageScale
+      canvasHeight = CANVAS_HEIGHT*stageScale
+      canvas.width(canvasWidth)
+      canvas.height(canvasHeight)
+
+      canvasElement.width = canvasWidth * pixelRatio
+      canvasElement.height = canvasHeight * pixelRatio
+
+      stage.scaleX = stage.scaleY = stageScale
+      console.log('stageScale', stageScale)
     }
 
     p.addBookReader = function() {
