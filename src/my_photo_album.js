@@ -19,13 +19,14 @@
 
     // common utility methods
     function getDevicePixelRatio() {
-      var ratio;
-      ratio = 1;
-      if ((window.screen.systemXDPI != null) && (window.screen.logicalXDPI != null) && window.screen.systemXDPI > window.screen.logicalXDPI) {
-        ratio = window.screen.systemXDPI / window.screen.logicalXDPI;
-      } else if (window.devicePixelRatio != null) {
-        ratio = window.devicePixelRatio;
-      }
+      context = stage.parent.canvas.getContext('2d')
+      devicePixelRatio = window.devicePixelRatio || 1
+      backingStoreRatio = context.webkitBackingStorePixelRatio ||
+                          context.mozBackingStorePixelRatio ||
+                          context.msBackingStorePixelRatio ||
+                          context.oBackingStorePixelRatio ||
+                          context.backingStorePixelRatio || 1
+      ratio = devicePixelRatio / backingStoreRatio;
       return ratio;
     }
 
@@ -38,10 +39,9 @@
       return s;
     }
 
-    function getStageScale(stageWidth, stageHeight, pixelRatio) {
-      console.log('window height', $(window).height())
-      docWidth = $(window).width() * pixelRatio
-      docHeight = $(window).height() * pixelRatio
+    function getStageScale(stageWidth, stageHeight) {
+      docWidth = $(window).width()
+      docHeight = $(window).height()
       docHeight -= $("header").height()*2
       scaleWidth = docWidth / stageWidth
       scaleHeight = docHeight / stageHeight
@@ -152,7 +152,7 @@
       easelStage.addChild(stage)
 
       pixelRatio = getDevicePixelRatio()
-      stageScale = getStageScale(CANVAS_WIDTH, CANVAS_HEIGHT, 1)
+      stageScale = getStageScale(CANVAS_WIDTH, CANVAS_HEIGHT)
       // css
       canvasWidth = CANVAS_WIDTH*stageScale
       canvasHeight = CANVAS_HEIGHT*stageScale
@@ -160,10 +160,10 @@
       canvas.height(canvasHeight)
       $("#background").css("width", canvasWidth+"px")
 
-      canvasElement.width = canvasWidth //* pixelRatio
-      canvasElement.height = canvasHeight //* pixelRatio
+      canvasElement.width = canvasWidth * pixelRatio
+      canvasElement.height = canvasHeight * pixelRatio
 
-      stage.scaleX = stage.scaleY = stageScale
+      stage.scaleX = stage.scaleY = stageScale*pixelRatio
       console.log('stageScale', stageScale)
     }
 
