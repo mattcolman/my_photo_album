@@ -42,6 +42,7 @@
       console.log('window height', $(window).height())
       docWidth = $(window).width() * pixelRatio
       docHeight = $(window).height() * pixelRatio
+      docHeight -= $("header").height()*2
       scaleWidth = docWidth / stageWidth
       scaleHeight = docHeight / stageHeight
       scale = Math.min(scaleWidth, scaleHeight)
@@ -151,15 +152,16 @@
       easelStage.addChild(stage)
 
       pixelRatio = getDevicePixelRatio()
-      stageScale = getStageScale(CANVAS_WIDTH, CANVAS_HEIGHT, pixelRatio)
+      stageScale = getStageScale(CANVAS_WIDTH, CANVAS_HEIGHT, 1)
       // css
       canvasWidth = CANVAS_WIDTH*stageScale
       canvasHeight = CANVAS_HEIGHT*stageScale
       canvas.width(canvasWidth)
       canvas.height(canvasHeight)
+      $("#background").css("width", canvasWidth+"px")
 
-      canvasElement.width = canvasWidth * pixelRatio
-      canvasElement.height = canvasHeight * pixelRatio
+      canvasElement.width = canvasWidth //* pixelRatio
+      canvasElement.height = canvasHeight //* pixelRatio
 
       stage.scaleX = stage.scaleY = stageScale
       console.log('stageScale', stageScale)

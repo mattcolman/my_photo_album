@@ -1,5 +1,5 @@
 body {
-  margin: 0 auto 0 0;
+  margin: 0px auto;
   background-color: #333333;
 }
 
@@ -8,10 +8,8 @@ header {
 }
 
 #background {
-  width: 2000px;
-  height: 700px;
   position: relative;
-  margin: 0 auto;
   padding: 0;
+  margin: 0px auto;
 }
 
