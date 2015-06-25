@@ -41,13 +41,8 @@
       return s;
     }
 
-    function getStageScale(stageWidth, stageHeight) {
-      docWidth = $(window).width()
-      docHeight = $(window).height()
-      //docHeight -= $("header").height()*2
-      scaleWidth = docWidth / stageWidth
-      scaleHeight = docHeight / stageHeight
-      scale = Math.min(scaleWidth, scaleHeight)
+    function getStageScale(docWidth, stageWidth) {
+      scale = docWidth / stageWidth
       return scale;
     }
 
@@ -107,11 +102,12 @@
     /**
      * @constructor
      */
-    function MyPhotoAlbum(feed, parentDiv, options) {
+    function MyPhotoAlbum(feed, parentDiv, width, options) {
       if (options == null) options = {};
       this.feed = feed
       this.theme = (options.theme != null) ? options.theme : DEFAULT_THEME
       this.parentDiv = parentDiv
+      this.width = width
       this.init()
     }
 
@@ -156,7 +152,7 @@
       easelStage.addChild(stage)
 
       pixelRatio = getDevicePixelRatio()
-      stageScale = getStageScale(CANVAS_WIDTH, CANVAS_HEIGHT)
+      stageScale = getStageScale(this.width, CANVAS_WIDTH)
       // css
       canvasWidth = CANVAS_WIDTH*stageScale
       canvasHeight = CANVAS_HEIGHT*stageScale
@@ -198,7 +194,7 @@
       //   count : 14
       // }
 
-      photoFeed = this.feed
+      photoFeed = this.feed.replace("alt=rss&kind=photo", "alt=json&callback=?")
 
       manifest = [];
       _this = this;

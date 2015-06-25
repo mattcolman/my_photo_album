@@ -29,8 +29,10 @@
   function createBook() {
     feed = $("input").val()
     //feed = "https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/6150524963620273041?alt=json&callback=?&hl=en_US";
+    //https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/5674430503135696209?alt=rss&kind=photo&hl=en_US
+
     babyBoyTheme = {background: "boy_bg.png"}
-    myPhotoAlbum = new MyPhotoAlbum(feed, "section-3", {theme: babyBoyTheme});
+    myPhotoAlbum = new MyPhotoAlbum(feed, "section-3", $("#section-1").width(), {theme: babyBoyTheme});
   }
 
 </script>
