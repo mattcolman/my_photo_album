@@ -44,7 +44,7 @@
     function getStageScale(stageWidth, stageHeight) {
       docWidth = $(window).width()
       docHeight = $(window).height()
-      docHeight -= $("header").height()*2
+      //docHeight -= $("header").height()*2
       scaleWidth = docWidth / stageWidth
       scaleHeight = docHeight / stageHeight
       scale = Math.min(scaleWidth, scaleHeight)
@@ -107,10 +107,11 @@
     /**
      * @constructor
      */
-    function MyPhotoAlbum(feed, options) {
+    function MyPhotoAlbum(feed, parentDiv, options) {
       if (options == null) options = {};
       this.feed = feed
       this.theme = (options.theme != null) ? options.theme : DEFAULT_THEME
+      this.parentDiv = parentDiv
       this.init()
     }
 
@@ -147,7 +148,7 @@
     p.setupStage = function() {
       var canvas = $('<canvas>')
       var canvasElement = canvas[0]
-      $("#background").append(canvas)
+      $("#"+this.parentDiv).append(canvas)
       var easelStage = new createjs.Stage(canvasElement);
       easelStage.enableMouseOver();
       createjs.Ticker.addEventListener("tick", easelStage);
