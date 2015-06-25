@@ -2,6 +2,7 @@
 
   /**
    * @author Matt Colman http://mattcolman.com/ @matt_colman
+   * EaselJS (CreateJS) built photo album
    */
 
   /**
@@ -18,6 +19,7 @@
   MyPhotoAlbum = (function() {
 
     // common utility methods
+    // code taken from http://www.html5rocks.com/en/tutorials/canvas/hidpi/
     function getDevicePixelRatio() {
       context = stage.parent.canvas.getContext('2d')
       devicePixelRatio = window.devicePixelRatio || 1
@@ -72,6 +74,7 @@
 
     DEFAULT_THEME = {background: "#ffffff"}
 
+    // Generated from Flash.
     PageTypes = ["1xAny", "4xLan", "2xPor", "1xLan+1xSqu"]
     PageLayouts = {
       "1xLan+1xSqu": [
