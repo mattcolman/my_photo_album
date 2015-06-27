@@ -102,13 +102,9 @@
     /**
      * @constructor
      */
-    function MyPhotoAlbum(feed, parentDiv, width, options) {
-      if (options == null) options = {};
-      this.feed = feed
-      this.theme = (options.theme != null) ? options.theme : DEFAULT_THEME
+    function MyPhotoAlbum(parentDiv, width) {
       this.parentDiv = parentDiv
       this.width = width
-      this.init()
     }
 
     var p = createjs.extend(MyPhotoAlbum, createjs.EventDispatcher);
@@ -117,10 +113,11 @@
     p.debug = false; // debug turns of console logs and prints the page number.
 
   // public methods:
-    p.init = function() {
+    p.createBook = function(feed, theme) {
+      this.feed = feed
+      this.theme = theme
       this.preloadAssets();
-    };
-
+    }
 
     p.preloadAssets = function() {
       queue = new createjs.LoadQueue(false);
@@ -136,8 +133,13 @@
     p.handlePreloadAssetsComplete = function() {
       queue.removeEventListener("complete", completeHandler)
       this.backgroundImage = queue.getResult("background");
-      this.setupStage();
-      this.addBookReader();
+      if (br) {
+        br.clear()
+        br.init(this.getOptions())
+      } else {
+        this.setupStage();
+        this.addBookReader();
+      }
       this.addImages();
     }
 
@@ -168,7 +170,14 @@
     }
 
     p.addBookReader = function() {
-      options = {
+      cnt = new createjs.Container()
+      stage.addChild(cnt)
+      br = new BookReader(cnt, this.getOptions())
+      cnt.x = (2000 - BOOK_WIDTH)/2
+    }
+
+    p.getOptions = function() {
+      return {
         numPages: 0,
         x: 0,
         y: 0,
@@ -178,11 +187,6 @@
         startPage: 0,
         background: this.backgroundImage
       }
-
-      cnt = new createjs.Container()
-      stage.addChild(cnt)
-      br = new BookReader(cnt, options)
-      cnt.x = (2000 - BOOK_WIDTH)/2
     }
 
     p.addImages = function() {
