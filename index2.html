@@ -29,6 +29,14 @@
 
     var myPhotoAlbum = null
 
+    function init() {
+      // $('.theme-button').click(function(){
+      //   $("#tab-3").removeClass("disabled")
+      //   $('.nav-pills a[href="#section-3"]').tab('show');
+      //   createBook()
+      // })
+    }
+
     function createBook() {
       feed = $("input").val()
       //feed = "https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/6150524963620273041?alt=json&callback=?&hl=en_US";
@@ -42,10 +50,15 @@
       myPhotoAlbum.createBook(feed, theme)
     }
 
+    function handleGoClicked() {
+      $("#tab-2").removeClass("disabled")
+      $('.nav-pills a[href="#section-2"]').tab('show');
+    }
+
   </script>
 
 </head>
-<body>
+<body onload="init()">
 
   <header>
     <div class="jumbotron">
@@ -59,9 +72,9 @@
   <div class="demo-area">
     <div class="container">
       <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#section-1" data-toggle="tab">Enter Picasa link</a></li>
-        <li><a href="#section-2" data-toggle="tab">Choose a theme</a></li>
-        <li><a href="#section-3" onclick="createBook()" data-toggle="tab">Your Photo Album!</a></li>
+        <li id="tab-1" class="active"><a href="#section-1" data-toggle="tab">Enter Picasa link</a></li>
+        <li id="tab-2" class="disabled"><a href="#section-2" data-toggle="tab">Choose a theme</a></li>
+        <li id="tab-3" class="disabled"><a href="#section-3" data-toggle="tab">Your Photo Album!</a></li>
       </ul>
 
       <div class="tab-content">
@@ -71,7 +84,7 @@
             <span class="input-group-addon" id="sizing-addon1">@</span>
             <input type="text" class="form-control" placeholder="Enter your Picasa link" aria-describedby="sizing-addon1">
             <span class="input-group-btn">
-              <button class="btn btn-default" type="button">Go!</button>
+              <button class="btn btn-default" onclick="handleGoClicked()" type="button">Go!</button>
             </span>
           </div>
         </div>
@@ -79,30 +92,29 @@
           <div class="row">
             <hr>
             <div class="col-sm-6 col-md-4">
-              <a href="#" class="thumbnail">
+              <div class="thumbnail">
                 <img src="./assets/images/boy_theme.jpg" alt="">
                 <div class="caption">
-                  <h3>Baby Boy Theme</h3>
+                  <p><a href="#section-3" class="btn btn-primary center-block theme-button" role="button">Baby Boy Theme</a></p>
                 </div>
-              </a>
+              </div>
             </div>
             <div class="col-sm-6 col-md-4">
-              <a href="#" class="thumbnail">
+              <div class="thumbnail">
                 <img src="./assets/images/boy_theme.jpg" alt="">
                 <div class="caption">
-                  <h3>Baby Boy Theme</h3>
+                  <p><a href="#section-3" class="btn btn-primary center-block theme-button" role="button">Baby Boy Theme</a></p>
                 </div>
-              </a>
+              </div>
             </div>
             <div class="col-sm-6 col-md-4">
-              <a href="#" class="thumbnail">
+              <div class="thumbnail">
                 <img src="./assets/images/boy_theme.jpg" alt="">
                 <div class="caption">
-                  <h3>Baby Boy Theme</h3>
+                  <p><a href="#" class="btn btn-primary center-block theme-button" role="button">Baby Boy Theme</a></p>
                 </div>
-              </a>
+              </div>
             </div>
-          </div>
         </div>
         <div class="tab-pane fade" id="section-3">
           <hr>
