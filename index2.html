@@ -37,6 +37,15 @@
       })
     }
 
+    function onTextChange() {
+      console.log("on text change")
+
+      feed = $("input").val()
+      if (feed.search("alt=rss&kind=photo") != -1) {
+        console.log("VALID!!!")
+      }
+    }
+
     function createBook() {
       feed = $("input").val()
       //feed = "https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/6150524963620273041?alt=json&callback=?&hl=en_US";
@@ -82,7 +91,7 @@
           <hr>
           <div class="input-group input-group-lg">
             <span class="input-group-addon" id="sizing-addon1">@</span>
-            <input type="text" class="form-control" placeholder="Enter your Picasa link" aria-describedby="sizing-addon1">
+            <input type="text" class="form-control" onkeyup="onTextChange()" placeholder="Enter your Picasa link" aria-describedby="sizing-addon1">
             <span class="input-group-btn">
               <button class="btn btn-default" onclick="handleGoClicked()" type="button">Go!</button>
             </span>
