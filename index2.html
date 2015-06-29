@@ -10,11 +10,11 @@
   <!-- Mobile Specific Meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
   <!-- Optional theme -->
-  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/custom.css">
@@ -28,6 +28,7 @@
   <script type="text/javascript">
 
     var myPhotoAlbum = null
+    var feedValid = null
 
     function init() {
       $('.theme-button').click(function(){
@@ -41,9 +42,37 @@
       console.log("on text change")
 
       feed = $("input").val()
-      if (feed.search("alt=rss&kind=photo") != -1) {
+      feed = feed.replace("alt=rss&kind=photo", "alt=json&callback=?")
+
+      $.getJSON(feed, handleSuccess).then(function() {
+        console.log('success callback')
+      }, function() {
+        setInvalid()
+      })
+    }
+
+    function handleSuccess(data) {
+      if (data.feed && data.feed.entry) {
         console.log("VALID!!!")
+        setValid()
+      } else {
+        setInvalid()
       }
+    }
+
+    function setValid() {
+      if (feedValid === true) return;
+      feedValid = true
+      $("button").removeClass("btn-default btn-danger disabled")
+      $("button").addClass("btn-success")
+    }
+
+    function setInvalid() {
+      if (feedValid === false) return;
+      console.log('setInvalid')
+      feedValid = false
+      $("button").removeClass("btn-default btn-success")
+      $("button").addClass("btn-danger")
     }
 
     function createBook() {
@@ -89,13 +118,16 @@
       <div class="tab-content">
         <div class="tab-pane fade in active" id="section-1">
           <hr>
+
           <div class="input-group input-group-lg">
-            <span class="input-group-addon" id="sizing-addon1">@</span>
-            <input type="text" class="form-control" onkeyup="onTextChange()" placeholder="Enter your Picasa link" aria-describedby="sizing-addon1">
+            <input type="text" class="form-control" onkeyup="onTextChange()" placeholder="Enter Picasa Link...">
             <span class="input-group-btn">
-              <button class="btn btn-default" onclick="handleGoClicked()" type="button">Go!</button>
+              <button class="btn btn-default disabled" onclick="handleGoClicked()" type="button">Go!</button>
             </span>
-          </div>
+          </div><!-- /input-group -->
+
+
+
         </div>
         <div class="tab-pane fade" id="section-2">
           <div class="row">
@@ -143,10 +175,9 @@
   </footer>
 
 
-
   <!-- Latest compiled and minified JavaScript -->
   <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 </html>
