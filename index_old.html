@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Book Reader</title>
+  <link href="./css/main.css" rel="stylesheet" type="text/css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+  <script src="./lib/easeljs-NEXT.combined.js"></script>
+  <script src="./lib/preloadjs-NEXT.combined.js"></script>
+  <script src="./lib/TweenMax.js"></script>
+  <script src="../easeljs_book_reader/src/book_reader.js"></script>
+  <script src="./src/my_photo_album.js"></script>
+<script type="text/javascript">
+
+  function init() {
+    feed = "https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/6150524963620273041?alt=json&callback=?&hl=en_US";
+    babyBoyTheme = {background: "boy_bg.png"}
+    myPhotoAlbum = new MyPhotoAlbum(feed, {theme: babyBoyTheme});
+  }
+
+</script>
+</head>
+
+<body onload="init()">
+<header>
+</header>
+
+<div id='background'>
+</div>
+
+</body>
+</html>
