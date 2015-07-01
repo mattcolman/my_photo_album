@@ -36,6 +36,17 @@
     }
 
     function init() {
+
+      // go btn click
+      $('#goBtn').on('click', function () {
+        $("#tab-2").removeClass("disabled")
+        $('.nav-pills a[href="#section-2"]').tab('show');
+      })
+
+      // properly disable pills if they are in a disabled visual state
+      $('.nav-pills a[href="#section-2"]').prop('disabled', true);
+
+      // theme-button click
       $('.theme-button').click(function(e){
         $("#tab-3").removeClass("disabled")
         $('.nav-pills a[href="#section-3"]').tab('show');
@@ -59,6 +70,7 @@
 
     function onTextChange() {
       console.log("on text change")
+      $('#goBtn').button('loading')
 
       feed = $("input").val()
       feed = feed.replace("alt=rss&kind=photo", "alt=json&callback=?")
@@ -81,17 +93,18 @@
 
     function setValid() {
       if (feedValid === true) return;
+      $('#goBtn').button('reset')
       feedValid = true
-      $("button").removeClass("btn-default btn-danger disabled")
-      $("button").addClass("btn-success")
+      $('#goBtn').removeClass("btn-default btn-danger disabled")
+      $('#goBtn').addClass("btn-success")
     }
 
     function setInvalid() {
       if (feedValid === false) return;
       console.log('setInvalid')
       feedValid = false
-      $("button").removeClass("btn-default btn-success")
-      $("button").addClass("btn-danger")
+      $('#goBtn').removeClass("btn-default btn-success")
+      $('#goBtn').addClass("btn-danger")
     }
 
     function createBook(feed, theme) {
@@ -103,11 +116,6 @@
         myPhotoAlbum = new MyPhotoAlbum("section-3", $(".tab-content").width());
       }
       myPhotoAlbum.createBook(feed, theme)
-    }
-
-    function handleGoClicked() {
-      $("#tab-2").removeClass("disabled")
-      $('.nav-pills a[href="#section-2"]').tab('show');
     }
 
   </script>
@@ -143,10 +151,20 @@
               <li> Now copy the url from the address bar and paste it into the box below </li>
             </ol>
           </div>
+          <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Example
+          </button>
+          <div class="collapse" id="collapseExample">
+            <div class="well">
+              <p> If you don't have a Picasa account, copy this link into the box below to try it out! </p>
+              <pre>https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/6150524963620273041?alt=json&callback=?&hl=en_US</pre>
+            </div>
+          </div>
+          <hr>
           <div class="input-group input-group-lg">
             <input type="text" class="form-control" onkeyup="onTextChange()" placeholder="Enter Picasa Link...">
             <span class="input-group-btn">
-              <button class="btn btn-default disabled" onclick="handleGoClicked()" type="button">Go!</button>
+              <button class="btn btn-default disabled" id="goBtn" data-loading-text="Invalid..." type="button">Go!</button>
             </span>
           </div><!-- /input-group -->
 

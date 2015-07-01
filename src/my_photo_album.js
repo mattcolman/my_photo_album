@@ -8,13 +8,10 @@
   /**
    * TODO
    * Use requirejs to split up classes and build a minified JS
-   * Draw white borders on images
    * smart sort to put suitable images in suitable dropZones e.g. match portrait to portrait
    * choose the page layouts with a pattern of images per page. e.g. [1, 2, 4, 3, 2, 1]
      then wait on each page for all images to be loaded before determining which page layout to choose from
-   * scale to fit screen
    * use SpriteStage for webgl
-   * build a bootstrap front page with picasa login.
   */
   MyPhotoAlbum = (function() {
 
