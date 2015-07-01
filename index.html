@@ -74,6 +74,7 @@
 
       feed = $("input").val()
       feed = feed.replace("alt=rss&kind=photo", "alt=json&callback=?")
+      if (feed.search("alt=json&callback=?") === -1) return;
 
       $.getJSON(feed, handleSuccess).then(function() {
         console.log('success callback')
@@ -95,7 +96,7 @@
       if (feedValid === true) return;
       $('#goBtn').button('reset')
       feedValid = true
-      $('#goBtn').removeClass("btn-default btn-danger disabled")
+      $('#goBtn').removeClass("btn-default disabled")
       $('#goBtn').addClass("btn-success")
     }
 
@@ -103,8 +104,8 @@
       if (feedValid === false) return;
       console.log('setInvalid')
       feedValid = false
-      $('#goBtn').removeClass("btn-default btn-success")
-      $('#goBtn').addClass("btn-danger")
+      $('#goBtn').removeClass("btn-success")
+      $('#goBtn').addClass("btn-default")
     }
 
     function createBook(feed, theme) {
