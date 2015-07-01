@@ -37,15 +37,20 @@
 
     function init() {
 
+      // properly disable pills if they are in a disabled visual state
+      $('.nav-pills a[href="#section-2"]').prop('disabled', true);
+      $('.nav-pills a[href="#section-3"]').prop('disabled', true);
+
+      // ---------- SECTION 1 -------- \\
       // go btn click
       $('#goBtn').on('click', function () {
         $("#tab-2").removeClass("disabled")
         $('.nav-pills a[href="#section-2"]').tab('show');
+        // enable the 2rd tab
+        $('.nav-pills a[href="#section-2"]').prop('disabled', false);
       })
 
-      // properly disable pills if they are in a disabled visual state
-      $('.nav-pills a[href="#section-2"]').prop('disabled', true);
-
+      // ---------- SECTION 2 -------- \\
       // theme-button click
       $('.theme-button').click(function(e){
         $("#tab-3").removeClass("disabled")
@@ -55,6 +60,9 @@
         feed = $("input").val()
         theme = Themes[e.currentTarget.innerHTML]
         createBook(feed, theme)
+
+        // enable the 3rd tab
+        $('.nav-pills a[href="#section-3"]').prop('disabled', false);
       })
     }
 
@@ -109,10 +117,6 @@
     }
 
     function createBook(feed, theme) {
-
-      //feed = "https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/6150524963620273041?alt=json&callback=?&hl=en_US";
-      //https://picasaweb.google.com/data/feed/base/user/111691737910533878984/albumid/5674430503135696209?alt=rss&kind=photo&hl=en_US
-
       if (!myPhotoAlbum) {
         myPhotoAlbum = new MyPhotoAlbum("section-3", $(".tab-content").width());
       }
